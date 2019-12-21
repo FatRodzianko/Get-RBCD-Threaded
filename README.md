@@ -15,6 +15,8 @@ Tested in an environment with 20k+ uses, groups, and computers (over 60k total o
 
 Currently only works if you are authenticated to a domain, and only queries your current domain. I may add functionality later to allow for you to specify the domain to query and to pass your own domain credential.
 
+This tool will not perform the delegation attack for you. You'll need to read Elad Shamir's and harmj0y's blogs to figure out how to do that. This will only help you find possible targets for the RBCD attack.
+
 ## Detections
 This tool does nothing more than query Active Directory using LDAP queries, which may not be easy to detect. Netflow could possibly be used to detect large numbers of LDAP queries / traffic to one system.
 
@@ -22,4 +24,4 @@ The other possible way to detect this is through honeypot accounts. The idea wou
 1. Monitor modifications to the honeypot computer object, specifically to the "msds-allowedtoactonbehalfofotheridentity" property
 1. Monitor for kerberos tickets requested for services on the honeypot computer object, specifically any kerberos tickets for administrator users
 
-I made this tool to help me on penetration tests. However, defenders / blue teams / sysadmins can easily use this to help find weaknesses in their environments and (hopefully) move to remediate them. This tool will not perform the delegation attack for you. You'll need to read Elad Shamir's and harmj0y's blogs to figure out how to do that. This will only help you find possible targets for the RBCD attack.
+I made this tool to help me on penetration tests. However, defenders / blue teams / sysadmins can easily use this to help find weaknesses in their environments and (hopefully) move to remediate them.
