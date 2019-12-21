@@ -17,6 +17,10 @@ Currently only works if you are authenticated to a domain, and only queries your
 
 This tool will not perform the delegation attack for you. You'll need to read Elad Shamir's and harmj0y's blogs to figure out how to do that. This will only help you find possible targets for the RBCD attack.
 
+Example usage from my AD lab:
+
+![alt text](https://raw.githubusercontent.com/FatRodzianko/Get-RBCD-Threaded/master/get-rbcd-threaded.PNG)
+
 ## Detections
 This tool does nothing more than query Active Directory using LDAP queries, which may not be easy to detect. Netflow could possibly be used to detect large numbers of LDAP queries / traffic to one system.
 
