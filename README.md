@@ -21,3 +21,5 @@ This tool does nothing more than query Active Directory using LDAP queries, whic
 The other possible way to detect this is through honeypot accounts. The idea would be to create a computer object that some user / group has write privileges to. The RBCD attack relies on modifying a computer object and then delegating kerberos tickets to it. The possible points of detection for the honeypot computer object could be:
 1. Monitor modifications to the honeypot computer object, specifically to the "msds-allowedtoactonbehalfofotheridentity" property
 1. Monitor for kerberos tickets requested for services on the honeypot computer object, specifically any kerberos tickets for administrator users
+
+I made this tool to help me on penetration tests. However, defenders / blue teams / sysadmins can easily use this to help find weaknesses in their environments and (hopefully) move to remediate them. This tool will not perform the delegation attack for you. You'll need to read Elad Shamir's and harmj0y's blogs to figure out how to do that. This will only help you find possible targets for the RBCD attack.
