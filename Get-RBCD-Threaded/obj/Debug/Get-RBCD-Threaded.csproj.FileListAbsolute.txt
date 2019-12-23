@@ -1,5 +1,0 @@
-c:\users\murph\source\repos\Get-RBCD-Threaded\Get-RBCD-Threaded\obj\Debug\Get-RBCD-Threaded.csproj.CoreCompileInputs.cache
-c:\users\murph\source\repos\Get-RBCD-Threaded\Get-RBCD-Threaded\bin\Debug\Get-RBCD-Threaded.exe
-c:\users\murph\source\repos\Get-RBCD-Threaded\Get-RBCD-Threaded\bin\Debug\Get-RBCD-Threaded.pdb
-c:\users\murph\source\repos\Get-RBCD-Threaded\Get-RBCD-Threaded\obj\Debug\Get-RBCD-Threaded.exe
-c:\users\murph\source\repos\Get-RBCD-Threaded\Get-RBCD-Threaded\obj\Debug\Get-RBCD-Threaded.pdb
