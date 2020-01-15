@@ -11,9 +11,24 @@ Get-RBCD-Thread will query all Active Directory users, groups (minus privileged 
 ## Usage
 Compile in Visual Studio. This uses Parallel.ForEach to spead up searching through the DACL object, so .NET v4 is minimum required.
 
-Tested in an environment with 20k+ uses, groups, and computers (over 60k total objects). Get-RBCD-Thread took ~60 seconds to complete. By comparison, my hacked together [PowerView](https://github.com/PowerShellMafia/PowerSploit/tree/dev) commands in this [gist](https://gist.github.com/FatRodzianko/e4cf3efc68a700dca7cedbfd5c05c99f) to perform a similar search ran for several hours and never completed.
+### Options
+-u|-username=, Username to authenticate as
 
-Currently only works if you are authenticated to a domain, and only queries your current domain. I may add functionality later to allow for you to specify the domain to query and to pass your own domain credential.
+-p|-password=, Password for the user
+
+-d|-domain=, Fully qualified domain name to authenticate to
+
+-s|-searchforest, Discover domains and forests through trust relationships. Enumerate all domains and forests
+
+-o|-outputfile=, Output to a CSV file. Provided full path to file and file name.
+
+-h|-?|-help, Show the help options
+
+You can now specify the username, password, and domain to authenticate to. If u/p/d options are blank, Get-RBCD-Threaded will atempt to authenticate to the domain in your current user context.
+
+-o will output to a CSV file. Provide the full file path and file name to save the output to.
+
+Tested in an environment with 20k+ uses, groups, and computers (over 60k total objects). Get-RBCD-Thread took ~60 seconds to complete. By comparison, my hacked together [PowerView](https://github.com/PowerShellMafia/PowerSploit/tree/dev) commands in this [gist](https://gist.github.com/FatRodzianko/e4cf3efc68a700dca7cedbfd5c05c99f) to perform a similar search ran for several hours and never completed.
 
 This tool will not perform the delegation attack for you. You'll need to read Elad Shamir's and harmj0y's blogs to figure out how to do that. This will only help you find possible targets for the RBCD attack.
 
