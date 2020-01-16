@@ -57,6 +57,7 @@ namespace Get_RBCD
             string password = null;
             string domain = null;
             string outputfile = null;
+            bool ldapInSecure = false;
             bool help = false;
             bool searchForest = false;
 
@@ -67,6 +68,7 @@ namespace Get_RBCD
                 {"d|domain=", "Fully qualified domain name to authenticate to", v => domain = v},
                 {"s|searchforest", "Enumerate all domains and forests", v => searchForest = true },
                 {"o|outputfile=", "Output to a CSV file. Please provided full path to file and file name.", v => outputfile = v },
+                {"i|insecure", "Force insecure LDAP connect if LDAPS is causing connection issues.", v => ldapInSecure = true },
                 { "h|?|help", "Show this help", v => help = true }
             };
 
@@ -107,17 +109,28 @@ namespace Get_RBCD
                 searchBase = "LDAP://DC=" + currentDomain.Replace(".", ",DC=");
                 Console.WriteLine("The LDAP search base is " + searchBase);
 
+                string ldapConnect = null;
+                if (ldapInSecure)
+                {
+                    ldapConnect = "LDAP://" + currentDomain;
+                }
+                else
+                {
+                    ldapConnect = "LDAP://" + currentDomain + ":636";
+                    Console.WriteLine(ldapConnect);
+                }
+
                 // Authenticate the user
                 if (username != null && password != null)
                 {
                     Console.WriteLine(format: "Credential information submitted. Attempting to authenticate to {0} as {1}", currentDomain, username);
                     Test_Credentials(username, password, currentDomain);
-                    adEntry = new DirectoryEntry("LDAP://"+currentDomain, username, password);
+                    adEntry = new DirectoryEntry(ldapConnect, username, password);
                     domainContext = new DirectoryContext(DirectoryContextType.Domain, currentDomain, username, password);
                 }
                 else
                 {
-                    adEntry = new DirectoryEntry(searchBase);
+                    adEntry = new DirectoryEntry(ldapConnect);
                     domainContext = new DirectoryContext(DirectoryContextType.Domain, currentDomain);
                 }
 
