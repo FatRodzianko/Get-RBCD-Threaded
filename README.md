@@ -20,6 +20,8 @@ Compile in Visual Studio. This uses Parallel.ForEach to spead up searching throu
 
 -s|-searchforest, Discover domains and forests through trust relationships. Enumerate all domains and forests
 
+-i|-insecure, Force insecure LDAP connect if LDAPS is causing connection issues.
+
 -o|-outputfile=, Output to a CSV file. Provided full path to file and file name.
 
 -h|-?|-help, Show the help options
