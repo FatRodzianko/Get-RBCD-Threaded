@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -60,6 +60,7 @@ namespace Get_RBCD
             bool ldapInSecure = false;
             bool help = false;
             bool searchForest = false;
+            int computerDate = 0;
 
             var options = new OptionSet()
             {
@@ -69,6 +70,7 @@ namespace Get_RBCD
                 {"s|searchforest", "Enumerate all domains and forests", v => searchForest = true },
                 {"o|outputfile=", "Output to a CSV file. Please provided full path to file and file name.", v => outputfile = v },
                 {"i|insecure", "Force insecure LDAP connect if LDAPS is causing connection issues.", v => ldapInSecure = true },
+                {"pwdlastset=", "Filter computers based on pwdLastSet to remove stale computer objects. If you set this to 90, it will filter out computer objects whose pwdLastSet date is more than 90 days ago", (int v) => computerDate = v },
                 { "h|?|help", "Show this help", v => help = true }
             };
 
@@ -195,7 +197,7 @@ namespace Get_RBCD
                         
                         Get_Users(adEntry, sidMapList, allSids, currentDomain);
                         Get_Groups(adEntry, sidMapList, allSids, currentDomain);
-                        aclResults = Get_Computers(adEntry, sidMapList, allSids, currentDomain, aclResults);
+                        aclResults = Get_Computers(adEntry, sidMapList, allSids, currentDomain, aclResults, computerDate);
 
                         
                         foreach (SearchResult acl in aclResults)
@@ -231,7 +233,7 @@ namespace Get_RBCD
 
                     Get_Users(adEntry, sidMapList, allSids, currentDomain);
                     Get_Groups(adEntry, sidMapList, allSids, currentDomain);
-                    aclResults = Get_Computers(adEntry, sidMapList, allSids, currentDomain, aclResults);
+                    aclResults = Get_Computers(adEntry, sidMapList, allSids, currentDomain, aclResults, computerDate);
 
                     foreach (SearchResult acl in aclResults)
                     {
@@ -358,10 +360,21 @@ namespace Get_RBCD
             }
         }
 
-        public static SearchResultCollection Get_Computers(DirectoryEntry adEntry, List<sidMap> sidMapList, List<string> allSids, string currentDomain, SearchResultCollection aclResults)
+        public static SearchResultCollection Get_Computers(DirectoryEntry adEntry, List<sidMap> sidMapList, List<string> allSids, string currentDomain, SearchResultCollection aclResults, int computerDate)
         {
             DirectorySearcher aclSearch = new DirectorySearcher(adEntry);
-            aclSearch.Filter = "(&(samAccountType=805306369))";
+            long date = 0;
+            if (computerDate != 0)
+            {
+                date = DateTime.Now.AddDays(Math.Abs(computerDate) * (-1)).ToFileTime();
+                aclSearch.Filter = "(&(samAccountType=805306369)(pwdLastSet>=" + date.ToString() + "))";
+            }
+            else
+            {
+                aclSearch.Filter = "(&(samAccountType=805306369))";
+            }
+            
+            //aclSearch.Filter = "(&(samAccountType=805306369)(pwdlastset<=" + date.ToString() +")";
             var Properties = new[] { "samaccountname", "ntsecuritydescriptor", "objectsid", "dnshostname" };
             aclSearch.PropertiesToLoad.AddRange(Properties);
             aclSearch.SecurityMasks = SecurityMasks.Dacl | SecurityMasks.Owner;
