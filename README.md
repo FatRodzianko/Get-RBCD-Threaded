@@ -20,6 +20,8 @@ Compile in Visual Studio. This uses Parallel.ForEach to spead up searching throu
 
 -s|-searchforest, Discover domains and forests through trust relationships. Enumerate all domains and forests
 
+-pwdlastset=, Filter computers based on pwdLastSet to remove stale computer objects. If you set this to 90, it will filter out computer objects whose pwdLastSet date is more than 90 days ago
+
 -i|-insecure, Force insecure LDAP connect if LDAPS is causing connection issues.
 
 -o|-outputfile=, Output to a CSV file. Provided full path to file and file name.
@@ -29,6 +31,10 @@ Compile in Visual Studio. This uses Parallel.ForEach to spead up searching throu
 You can now specify the username, password, and domain to authenticate to. If u/p/d options are blank, Get-RBCD-Threaded will atempt to authenticate to the domain in your current user context.
 
 -o will output to a CSV file. Provide the full file path and file name to save the output to.
+
+The default search specifies that port 636 be used to force LDAPS. This may cause issues. If you get an error saying something about the server not being available or similar, try the "-i" flag to remove the 636 port from the connect string.
+
+"pwdLastSet" has been added as a filtering option. In larger environments you can get a lot of stale computer objects that no longer exist as the "destination" object int he ACL, and can't really be used for the RBCD attack (at least not that I am aware of). Set pwdLastSet to a number of days. Example: "-pwdlastset=90" will filter out any computer objects from your results where the pwdLastSet date is greater or equal to 90 days ago from the current date and time.
 
 Tested in an environment with 20k+ uses, groups, and computers (over 60k total objects). Get-RBCD-Thread took ~60 seconds to complete. By comparison, my hacked together [PowerView](https://github.com/PowerShellMafia/PowerSploit/tree/dev) commands in this [gist](https://gist.github.com/FatRodzianko/e4cf3efc68a700dca7cedbfd5c05c99f) to perform a similar search ran for several hours and never completed.
 
