@@ -155,16 +155,73 @@ namespace Get_RBCD
                     Console.WriteLine("\nEnumerating all domain trusts...");
                     foreach (TrustRelationshipInformation trust in domainTrusts)
                     {
-                        Console.WriteLine(trust.TargetName + " " + trust.TrustType + " " + trust.TrustDirection);
-                        domainTrustArray.Add(trust.TargetName);
+                        // Only add trusts that are Bi or outbound so you can actually communicate with them
+                        if ((trust.TrustDirection == TrustDirection.Bidirectional) || (trust.TrustDirection == TrustDirection.Outbound))
+                        {
+                            Console.WriteLine(trust.TargetName + " " + trust.TrustType + " " + trust.TrustDirection);
+                            // If a forest trust is found, try and enumerate that forest trust further?
+                            if (trust.TrustType == TrustType.Forest)
+                            {
+                                DirectoryContext rootDomainContext;
+                                Domain rootDomain;
+                                TrustRelationshipInformationCollection forestTrusts;
+
+
+                                rootDomainContext = new DirectoryContext(DirectoryContextType.Domain, trust.TargetName);
+                                rootDomain = Domain.GetDomain(rootDomainContext);
+                                forestTrusts = rootDomain.GetAllTrustRelationships();
+                                foreach (TrustRelationshipInformation forestTrust in forestTrusts)
+                                    if ((forestTrust.TrustType == TrustType.ParentChild) && ((forestTrust.TrustDirection == TrustDirection.Bidirectional) || (forestTrust.TrustDirection == TrustDirection.Outbound)))
+                                    {
+                                        Console.WriteLine(trust.TargetName + " " + trust.TrustType + " " + trust.TrustDirection);
+                                        domainTrustArray.Add(forestTrust.TargetName);
+                                    }
+                            }
+                            else
+                            {
+                                domainTrustArray.Add(trust.TargetName);
+                            }
+
+
+                        }
                     }
 
                     //start getting all forest trusts
                     Console.WriteLine("\nEnumerating all trusted forests...");
                     foreach (TrustRelationshipInformation trust in currentForest.GetAllTrustRelationships())
                     {
-                        Console.WriteLine(trust.TargetName + " " + trust.TrustType + " " + trust.TrustDirection);
-                        domainTrustArray.Add(trust.TargetName);
+
+                        // Only add trusts that are Bi or outbound so you can actually communicate with them
+                        if ((trust.TrustDirection == TrustDirection.Bidirectional) || (trust.TrustDirection == TrustDirection.Outbound))
+                        {
+                            Console.WriteLine(trust.TargetName + " " + trust.TrustType + " " + trust.TrustDirection);
+                            // If a forest trust is found, try and enumerate that forest trust further?
+                            if (trust.TrustType == TrustType.Forest)
+                            {
+                                DirectoryContext rootDomainContext;
+                                Domain rootDomain;
+                                TrustRelationshipInformationCollection forestTrusts;
+
+
+                                rootDomainContext = new DirectoryContext(DirectoryContextType.Domain, trust.TargetName);
+                                rootDomain = Domain.GetDomain(rootDomainContext);
+                                forestTrusts = rootDomain.GetAllTrustRelationships();
+                                foreach (TrustRelationshipInformation forestTrust in forestTrusts)
+                                    if ((forestTrust.TrustType == TrustType.ParentChild) && ((forestTrust.TrustDirection == TrustDirection.Bidirectional) || (forestTrust.TrustDirection == TrustDirection.Outbound)))
+                                    {
+                                        Console.WriteLine(trust.TargetName + " " + trust.TrustType + " " + trust.TrustDirection);
+                                        domainTrustArray.Add(forestTrust.TargetName);
+                                    }
+                            }
+                            else
+                            {
+                                domainTrustArray.Add(trust.TargetName);
+                            }
+
+                            
+                        }
+
+                        
                     }
 
                     //Set the variables needed to store users, groups, and domains
