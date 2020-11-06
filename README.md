@@ -32,7 +32,7 @@ You can now specify the username, password, and domain to authenticate to. If u/
 
 -o will output to a CSV file. Provide the full file path and file name to save the output to.
 
-The default search specifies that port 636 be used to force LDAPS. This may cause issues. If you get an error saying something about the server not being available or similar, try the "-i" flag to remove the 636 port from the connect string.
+The default search specifies that port 636 be used to force LDAPS. This may cause issues. **If you get an error saying something about the server not being available or similar, try the "-i" flag to remove the 636 port from the connect string.**
 
 "pwdLastSet" has been added as a filtering option. In larger environments you can get a lot of stale computer objects that no longer exist as the "destination" object int he ACL, and can't really be used for the RBCD attack (at least not that I am aware of). Set pwdLastSet to a number of days. Example: "-pwdlastset=90" will filter out any computer objects from your results where the pwdLastSet date is greater or equal to 90 days ago from the current date and time.
 
