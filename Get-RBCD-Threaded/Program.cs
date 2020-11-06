@@ -514,6 +514,26 @@ namespace Get_RBCD
                             rbcdList.Add(new rbcd(objectSid.SamAccountName, objectSid.DomainName, hostname, "WriteOwner"));
                         }
                     }
+                    else if (adRule.ActiveDirectoryRights.ToString().Contains("WriteDacl"))
+                    {
+                        if (allSids.Contains(sid) && sid != computerSid)
+                        {
+                            var objectSid = sidMapList.FirstOrDefault(o => o.ObjectSID == sid);
+                            rbcdList.Add(new rbcd(objectSid.SamAccountName, objectSid.DomainName, hostname, "WriteDacl"));
+                        }
+                    }
+                    else if (adRule.ActiveDirectoryRights.ToString().Contains("WriteProp"))
+                    {
+                        if (adRule.ObjectType.ToString().Contains("3f78c3e5-f79a-46bd-a0b8-9d18116ddc79"))
+                        {
+                            if (allSids.Contains(sid) && sid != computerSid)
+                            {
+                                var objectSid = sidMapList.FirstOrDefault(o => o.ObjectSID == sid);
+                                rbcdList.Add(new rbcd(objectSid.SamAccountName, objectSid.DomainName, hostname, "WriteProp"));
+                            }
+                        }
+                        
+                    }
 
                 }
 
